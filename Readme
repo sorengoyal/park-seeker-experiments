@@ -1,0 +1,8 @@
+Dependencies
+============
+Python (3.5) (gdal v2.1 and rasterio requires this) 
+planet
+gdal (2.1) (for downloading aoi)
+json
+rasterio (for reading geotiff files)
+matplotlib
