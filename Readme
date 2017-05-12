@@ -6,3 +6,5 @@ gdal (2.1) (for downloading aoi)
 json
 rasterio (for reading geotiff files)
 matplotlib
+Flask (0.12.1)
+Flask-WTF
