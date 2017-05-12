@@ -5,15 +5,15 @@ import json
 from osgeo import gdal
 # our demo filter that filters by geometry, date and cloud cover
 from demo_filters import redding_reservoir
+
+API_KEY='3d42933f4c284a3b8dd2c5200e97da00'
 #%%
 # Stats API request object
 stats_endpoint_request = {
   "interval": "day",
-  "item_types": ['PSOrthoTile'], #["REOrthoTile"],
+  "item_types": ['REOrthoTile'], #["REOrthoTile"],
   "filter": redding_reservoir
 }
-API_KEY='db945b0b15344448b5252cb143c78f5d'
-#%%
 # fire off the POST request
 result = \
   requests.post(
@@ -24,7 +24,7 @@ result = \
 print(result.text)
 #%%
 search_endpoint_request = {
-  "item_types": ["REOrthoTile"], #REOrthoTile
+  "item_types": ["PSOrthoTile"], #REOrthoTile
   "filter": redding_reservoir
 }
 
@@ -33,14 +33,14 @@ result = \
     'https://api.planet.com/data/v1/quick-search',
     auth=HTTPBasicAuth(API_KEY, ''),
     json=search_endpoint_request)
-
+#To download sometimes the permissions are not aviable. Permisions have to be checked
 results = json.loads(result.text)
-link = results['features'][1]['_links']['thumbnail']
+link = results['features'][5]['_links']['thumbnail']
 print(link)
 
 #%%
 #Downloads the entire image
-asset_path = results['features'][1]['_links']['assets']
+asset_path = results['features'][5]['_links']['assets']
 
 # setup auth
 session = requests.Session()
@@ -58,14 +58,15 @@ response = session.post(item_activation_url)
 print(response.status_code)
 #%%
 #Download the Area of Interest (AOI)
-item_id = results['features'][1]['id']
-asset_path = results['features'][1]['_links']['assets']
+item_id = results['features'][5]['id']
+asset_type = 'visual'
+asset_path = results['features'][5]['_links']['assets']
 
 # Request a new download URL
 result = requests.get(asset_path, auth=HTTPBasicAuth(API_KEY, ''))
-download_url = result.json()['analytic']['location']
+download_url = result.json()[asset_type]['location']
 vsicurl_url = '/vsicurl/' + download_url
-output_file = item_id + '_subarea.tif'
+output_file = item_id + '_' + asset_type + '_subarea.tif'
 
 # GDAL Warp crops the image by our AOI, and saves it
-err = gdal.Warp(output_file, vsicurl_url, dstSRS = 'EPSG:4326', cutlineDSName = 'subarea.geojson', cropToCutline = True)
+err = gdal.Warp(output_file, vsicurl_url, dstSRS = 'EPSG:4326', cutlineDSName = 'subarea.json', cropToCutline = True)
