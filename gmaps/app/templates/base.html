@@ -1,0 +1,26 @@
+<html>
+	<head>
+       <title>Google Maps Test</title>
+       <style>
+           html,
+           body{
+                font-family:Arial, sans-serif;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+           }
+           #map{
+                    height: 100%
+                    
+           }    
+        </style>
+    </head>
+    
+	<body>
+           
+	{% block content %} {% endblock %}
+	<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key={{key}}&v=3&callback=initMap">
+    </script>
+    </body>
+</html>
