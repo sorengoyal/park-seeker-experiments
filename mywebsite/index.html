@@ -1,0 +1,24 @@
+<html>
+
+<body>
+<style>
+   #wrapper { position: relative; }
+   #over_map { position: absolute; top: 10px; left: 10px; z-index: 99; }
+    #map{height: 100%;}
+</style>
+
+<div id="wrapper">
+   <div id="map">
+
+   </div>
+
+   <div id="over_map">
+       <h1> Up here</h1>
+   </div>
+    <script src = "maps.js"></script>
+</div>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key=AIzaSyCdlOuxf56nB-hgN35Jpvk7qm7px-8wCPA&v=3&callback=initMap">
+    </script>
+</body>
+</html>

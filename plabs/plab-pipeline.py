@@ -43,7 +43,7 @@ thumb = session.get(result['_links']['thumbnail'])
 thumb_file = result['id'] + '_thumb.png'
 with open(thumb_file, 'wb') as file:
     file.write(thumb.content)
-    print('Donwloaded Thumbnail:' + thumb_file)
+    print('Downloaded Thumbnail:' + thumb_file)
 asset_link = result['_links']['assets']
 item_id = result['id']
 #%%

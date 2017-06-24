@@ -12,7 +12,12 @@
            #map{
                     height: 100%
                     
-           }    
+           }
+           #toggle-drawing {
+               width:27%;
+               position: relative;
+               margin-left: 10px;
+           }
         </style>
     </head>
     
@@ -20,7 +25,7 @@
            
 	{% block content %} {% endblock %}
 	<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key={{key}}&v=3&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?libraries=drawing,geometry&key={{key}}&v=3&callback=initMap">
     </script>
     </body>
 </html>

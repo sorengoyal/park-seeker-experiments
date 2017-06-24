@@ -109,33 +109,12 @@ function initMap() {
     
     //Constructor: Creates a new map. Only zoom and corrdinates a required
     map = new google.maps.Map(document.getElementById('map'),{
-            center: {lat:40.7413549, lng: -73.9980244},
-            zoom: 20,
+            center: {lat:37.805749114187385, lng: -122.4270486831665,},
+            zoom: 13,
             styles: style
     });
-    var center = {lat:40.7413549, lng: -73.9980244};
-    var locations = [
-            {title: "Neil Ave Apartments", location:{lat:40.7413549, lng:-73.998024}},
-            {title: "Top Right Kill", location:{lat:40.7413559, lng:-73.998034}},
-            {title: "Open Heart Surgery", location:{lat:40.7413539, lng:-73.998014}},
-            {title: "Kill Bill Vol 2", location:{lat:40.7413539, lng:-73.998034}},
-            {title: "Ninety Percenty Kill Rate", location:{lat:40.7413559, lng:-73.998014}}
-            ];
-    var infoWindow = new google.maps.InfoWindow();
-    var markers = [];
-    for(var i = 0; i < locations.length; i++){
-        var marker = new google.maps.Marker({
-        position: locations[i].location,
-        map: map,
-        title: locations[i].title,
-        animation: google.maps.Animation.DROP,
-        id: i
-        });
-        marker.addListener('click', function(){
-            populateInfoWindow(this, infoWindow);
-        });
-        markers.push(marker);
-    }
+    
+    //var center = {lat:40.7413549, lng: -73.9980244};
     
     
     drawingManager = new google.maps.drawing.DrawingManager({
@@ -148,11 +127,8 @@ function initMap() {
             ]
         }
     });
-    
-    document.getElementById('toggle-drawing').addEventListener('click', function() {
-          toggleDrawing(drawingManager);
-        });
-    var path = null;
+    drawingManager.setMap(map)
+
     drawingManager.addListener('overlaycomplete', function(event) {
           // First, check if there is an existing polygon.
           // If there is, get rid of it and remove the markers
@@ -165,11 +141,8 @@ function initMap() {
           // Creating a new editable polygon from the overlay.
           polygon = event.overlay;
           polygon.setEditable(false);
-          // Searching within the polygon.
           path = polygon.getPath().b;
-          for(var i = 0; i < path.length; i++){
-            console.log(path[i].lat() + ',' + path[i].lng());
-            }
+          sendPolygon(path);
         });
     
 }
@@ -185,17 +158,38 @@ function populateInfoWindow(marker, infoWindow){
     }        
 }
 
-function toggleDrawing(drawingManager) {
-        if (drawingManager.map) {
-          drawingManager.setMap(null);
-          // In case the user drew anything, get rid of the polygon
-          if (polygon !== null) {
-            polygon.setMap(null);
-          }
-        } else {
-          drawingManager.setMap(map);
+function sendPolygon(polygon) {
+    var xhr = new XMLHttpRequest();
+    var url = window.location.origin + "/polygon";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    /*
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+        var json =  JSON.parse(xhr.responseText);
+            console.log(json.polygon );
+            }
+    }; */
+    var data = JSON.stringify({"polygon": polygon});
+    console.log(data)
+    xhr.send(data);
+}
+/*
+var imageMapType = new google.maps.ImageMapType({
+    getTileUrl: function(coord, zoom) {
+    if (zoom < 17 || zoom > 20 ||
+        bounds[zoom][0][0] > coord.x || coord.x > bounds[zoom][0][1] ||
+        bounds[zoom][1][0] > coord.y || coord.y > bounds[zoom][1][1]) {
+          return null;
         }
-      }
 
+    return ['overlay.png',
+            zoom, '_', coord.x, '_', coord.y, '.png'].join('');
+      },
+      tileSize: new google.maps.Size(256, 256)
+    });
 
+    map.overlayMapTypes.push(imageMapType);
+}
+*/
 
